@@ -1,7 +1,7 @@
 'use client'
 
 import { Attachement, Course } from '@prisma/client'
-import { FileIcon, PlusCircleIcon } from 'lucide-react'
+import { FileIcon, Loader2Icon, PlusCircleIcon, XIcon } from 'lucide-react'
 import { z } from 'zod'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
@@ -23,6 +23,8 @@ type FormSchema = z.infer<typeof formSchema>
 
 export default function AttachmentForm({ initialData, courseId }: AttachmentFormProps) {
   const [isEditing, setIsEditing] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+
   const router = useRouter()
 
   const toggleEdit = () => setIsEditing((current) => !current)
@@ -35,6 +37,19 @@ export default function AttachmentForm({ initialData, courseId }: AttachmentForm
       router.refresh()
     } catch {
       toast.error('Something went wrong!')
+    }
+  }
+
+  const onDelete = (id: string) => async () => {
+    try {
+      setDeletingId(id)
+      await axios.delete(`/api/courses/${courseId}/attachments/${id}`)
+      toast.success('Attachment deleted')
+      router.refresh()
+    } catch {
+      toast.error('Something went wrong')
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -68,6 +83,13 @@ export default function AttachmentForm({ initialData, courseId }: AttachmentForm
                 >
                   <FileIcon className="mr-2 h-4 w-4 flex-shrink-0" />
                   <p className="truncate text-sm">{attachment.name}</p>
+                  {deletingId === attachment.id ? (
+                    <Loader2Icon className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <button className="ml-auto transition hover:opacity-75" onClick={onDelete(attachment.id)}>
+                      <XIcon className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
