@@ -14,7 +14,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { course
 
     const course = await db.course.update({
       where: { id: courseId, createdById: userId },
-      data: { title: values?.title, description: values?.description, imageUrl: values?.imageUrl },
+      data: {
+        title: values?.title,
+        description: values?.description,
+        imageUrl: values?.imageUrl,
+        category: { connect: { id: values?.categoryId } },
+      },
     })
 
     return NextResponse.json(course)

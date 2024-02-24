@@ -6,6 +6,7 @@ import IconBadge from '@/components/icon-badge'
 import TitleForm from './_components/title-form'
 import DescriptionForm from './_components/description-form'
 import ImageForm from './_components/image-form'
+import CategoryForm from './_components/category-form'
 
 export type CourseDetailsProps = {
   params: { courseId: string }
@@ -19,6 +20,7 @@ export default async function CourseDetails({ params }: CourseDetailsProps) {
   }
 
   const course = await db.course.findUnique({ where: { id: params.courseId, createdById: userId } })
+  const categories = await db.category.findMany({ orderBy: { name: 'asc' } })
 
   if (!course) {
     return redirect('/')
@@ -40,17 +42,20 @@ export default async function CourseDetails({ params }: CourseDetailsProps) {
       </div>
 
       <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div>
+        <div className="space-y-4">
           <div className="flex items-center gap-x-2">
             <IconBadge icon={LayoutDashboardIcon} />
             <h2 className="text-xl">Customize your course</h2>
           </div>
-        </div>
 
-        <div className="space-y-4">
           <TitleForm initialData={course} courseId={course.id} />
           <DescriptionForm initialData={course} courseId={course.id} />
           <ImageForm initialData={course} courseId={course.id} />
+          <CategoryForm
+            initialData={course}
+            courseId={course.id}
+            options={categories.map((category) => ({ value: category.id, label: category.name }))}
+          />
         </div>
       </div>
     </div>
