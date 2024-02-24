@@ -4,6 +4,7 @@ import { LayoutDashboardIcon } from 'lucide-react'
 import { db } from '@/lib/db'
 import IconBadge from '@/components/icon-badge'
 import TitleForm from './_components/title-form'
+import DescriptionForm from './_components/description-form'
 
 export type CourseDetailsProps = {
   params: { courseId: string }
@@ -45,7 +46,10 @@ export default async function CourseDetails({ params }: CourseDetailsProps) {
           </div>
         </div>
 
-        <TitleForm initialData={course} courseId={course.id} />
+        <div className="space-y-4">
+          <TitleForm initialData={course} courseId={course.id} />
+          <DescriptionForm initialData={course} courseId={course.id} />
+        </div>
       </div>
     </div>
   )
