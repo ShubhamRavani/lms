@@ -18,7 +18,8 @@ export async function PATCH(request: NextRequest, { params }: { params: { course
         title: values?.title,
         description: values?.description,
         imageUrl: values?.imageUrl,
-        category: { connect: { id: values?.categoryId } },
+        categoryId: values?.categoryId,
+        price: values?.price,
       },
     })
 
