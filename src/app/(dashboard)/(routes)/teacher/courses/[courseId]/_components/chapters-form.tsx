@@ -69,7 +69,7 @@ export default function ChaptersForm({ initialData, courseId }: ChaptersFormProp
   }
 
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${courseId}/chapter/${id}`)
+    router.push(`/teacher/courses/${courseId}/chapters/${id}`)
   }
 
   return (
