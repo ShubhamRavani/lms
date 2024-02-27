@@ -5,6 +5,7 @@ import { ArrowLeftIcon, LayoutDashboardIcon } from 'lucide-react'
 import { db } from '@/lib/db'
 import IconBadge from '@/components/icon-badge'
 import ChapterTitleForm from './_components/chapter-title-form'
+import ChapterDescriptionForm from './_components/chapter-description-form'
 
 export default async function ChapterDetails({ params }: { params: { courseId: string; chapterId: string } }) {
   const { userId } = auth()
@@ -58,6 +59,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
           </div>
 
           <ChapterTitleForm initialData={chapter} courseId={params.courseId} chapterId={params.chapterId} />
+          <ChapterDescriptionForm initialData={chapter} courseId={params.courseId} chapterId={params.chapterId} />
         </div>
       </div>
     </div>
