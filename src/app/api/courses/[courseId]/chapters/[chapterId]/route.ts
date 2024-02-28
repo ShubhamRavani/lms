@@ -1,14 +1,16 @@
 import { auth } from '@clerk/nextjs'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import Mux from '@mux/mux-node'
 import { db } from '@/lib/db'
+
+type Params = { chapterId: string; courseId: string }
 
 const { video } = new Mux({
   tokenId: process.env.MUX_TOKEN_ID!,
   tokenSecret: process.env.MUX_TOKEN_SECRET!,
 })
 
-export async function PATCH(req: Request, { params }: { params: { chapterId: string; courseId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Params }) {
   try {
     const { userId } = await auth()
     // eslint-disable-next-line
@@ -50,6 +52,52 @@ export async function PATCH(req: Request, { params }: { params: { chapterId: str
 
     return NextResponse.json(chapter)
   } catch {
+    return new NextResponse('Internal server error', { status: 500 })
+  }
+}
+
+export async function DELETE(req: NextRequest, { params }: { params: Params }) {
+  try {
+    const { userId } = await auth()
+
+    if (!userId) {
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
+    const ownCourse = await db.course.findUnique({ where: { id: params.courseId, createdById: userId } })
+    if (!ownCourse) {
+      return new NextResponse('Unauthorized', { status: 401 })
+    }
+
+    const chapter = await db.chapter.findUnique({
+      where: { id: params.chapterId, courseId: params.courseId },
+    })
+    if (!chapter) {
+      return new NextResponse('Chapter not found', { status: 404 })
+    }
+
+    if (chapter.videoUrl) {
+      const existingMuxData = await db.muxData.findFirst({ where: { chapterId: params.chapterId } })
+
+      if (existingMuxData) {
+        await video.assets.delete(existingMuxData.assetId)
+        await db.muxData.delete({ where: { id: existingMuxData.id } })
+      }
+    }
+
+    const deletedChapter = await db.chapter.delete({ where: { id: params.chapterId } })
+
+    const publishedChaptersInCourse = await db.chapter.count({
+      where: { courseId: params.courseId, isPublished: true },
+    })
+
+    if (!publishedChaptersInCourse) {
+      await db.course.update({ where: { id: params.courseId }, data: { isPublished: false } })
+    }
+
+    return NextResponse.json(deletedChapter)
+  } catch (error) {
+    console.log(error)
     return new NextResponse('Internal server error', { status: 500 })
   }
 }
