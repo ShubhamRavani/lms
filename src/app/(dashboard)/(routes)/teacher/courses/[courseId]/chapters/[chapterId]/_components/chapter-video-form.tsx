@@ -7,6 +7,7 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
+import MuxPlayer from '@mux/mux-player-react'
 import { Button } from '@/components/ui/button'
 import FileUpload from '@/components/file-upload'
 
@@ -68,7 +69,9 @@ export default function ChapterVideoForm({ initialData, courseId, chapterId }: C
             <VideoIcon className="h-10 w-10 text-slate-500" />
           </div>
         ) : (
-          <div className="relative mt-2 aspect-video">Video Uploaded</div>
+          <div className="relative mt-2 aspect-video">
+            <MuxPlayer playbackId={initialData?.muxData?.playbackId ?? ''} />
+          </div>
         ))}
 
       {isEditing ? (
