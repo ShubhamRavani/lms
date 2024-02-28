@@ -10,24 +10,23 @@ import toast from 'react-hot-toast'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormDescription, FormField, FormItem } from '@/components/ui/form'
 import { cn } from '@/lib/utils'
-import Editor from '@/components/editor'
-import Preview from '@/components/preview'
+import { Checkbox } from '@/components/ui/checkbox'
 
-type ChapterDescriptionFormProps = {
+type ChapterAccessFormProps = {
   initialData: Chapter
   courseId: string
   chapterId: string
 }
 
 const formSchema = z.object({
-  description: z.string().min(1),
+  isFree: z.boolean().default(false),
 })
 
 type FormSchema = z.infer<typeof formSchema>
 
-export default function ChapterDescriptionForm({ initialData, courseId, chapterId }: ChapterDescriptionFormProps) {
+export default function ChapterAccessForm({ initialData, courseId, chapterId }: ChapterAccessFormProps) {
   const [isEditing, setIsEditing] = useState(false)
   const router = useRouter()
 
@@ -35,7 +34,7 @@ export default function ChapterDescriptionForm({ initialData, courseId, chapterI
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
-    defaultValues: { description: initialData.description ?? '' },
+    defaultValues: { isFree: !!initialData.isFree },
   })
 
   const { isSubmitting, isValid } = form.formState
@@ -54,35 +53,38 @@ export default function ChapterDescriptionForm({ initialData, courseId, chapterI
   return (
     <div className="mt-6 rounded-md border bg-slate-100 p-4 md:mt-0">
       <div className="flex items-center justify-between font-medium">
-        Chapter Description
+        Chapter access
         <Button variant="ghost" onClick={toggleEdit}>
           {isEditing ? (
             'Cancel'
           ) : (
             <>
               <PencilIcon className="mr-2 h-4 w-4" />
-              Edit Description
+              Edit Access
             </>
           )}
         </Button>
       </div>
 
       {!isEditing ? (
-        <div className={cn('mt-2 text-sm', { 'italic text-muted-foreground': !initialData.description })}>
-          {initialData?.description ? <Preview value={initialData.description} /> : 'No description provided'}
-        </div>
+        <p className={cn('mt-2 text-sm', { 'italic text-muted-foreground': !initialData.isFree })}>
+          {initialData.isFree ? 'This chapter is free for preview.' : 'This chapter is not free'}
+        </p>
       ) : (
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="mt-4 space-y-4">
             <FormField
               control={form.control}
-              name="description"
+              name="isFree"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
-                    <Editor {...field} />
+                    <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
-                  <FormMessage />
+
+                  <div className="space-y-1 leading-none">
+                    <FormDescription>Check this box if you want to make this free for preview</FormDescription>
+                  </div>
                 </FormItem>
               )}
             />
