@@ -96,8 +96,7 @@ export async function DELETE(req: NextRequest, { params }: { params: Params }) {
     }
 
     return NextResponse.json(deletedChapter)
-  } catch (error) {
-    console.log(error)
+  } catch {
     return new NextResponse('Internal server error', { status: 500 })
   }
 }

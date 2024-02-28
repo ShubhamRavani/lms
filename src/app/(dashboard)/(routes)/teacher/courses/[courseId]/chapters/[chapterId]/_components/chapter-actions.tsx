@@ -34,9 +34,26 @@ export default function ChapterActions({ disabled, isPublished, courseId, chapte
     }
   }
 
+  const onPublish = async () => {
+    try {
+      if (isPublished) {
+        await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/unpublish`)
+        toast.success('Chapter unpublished!')
+      } else {
+        await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/publish`)
+        toast.success('Chapter published!')
+      }
+      router.refresh()
+    } catch {
+      toast.error('Something went wrong')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="flex items-center gap-x-2">
-      <Button disabled={disabled || isLoading} variant="outline" size="sm" onClick={() => {}}>
+      <Button disabled={disabled || isLoading} variant="outline" size="sm" onClick={onPublish}>
         {isPublished ? 'Unpublish' : 'Publish'}
       </Button>
       <ConfirmModal onConfirm={onDelete}>
