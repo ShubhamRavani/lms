@@ -7,6 +7,7 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { ConfirmModal } from '@/components/modals'
+import { useConfettiStore } from '@/hooks/use-confetti'
 
 type ActionsProps = {
   disabled?: boolean
@@ -17,6 +18,7 @@ type ActionsProps = {
 export default function Actions({ disabled, isPublished, courseId }: ActionsProps) {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const confetti = useConfettiStore()
 
   const onDelete = async () => {
     try {
@@ -41,6 +43,7 @@ export default function Actions({ disabled, isPublished, courseId }: ActionsProp
       } else {
         await axios.patch(`/api/courses/${courseId}/publish`)
         toast.success('Course published!')
+        confetti.onOpen()
       }
       router.refresh()
     } catch {
