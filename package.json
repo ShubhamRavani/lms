@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "pnpm prisma deploy"
+    "postinstall": "pnpm prisma migrate deploy"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.29.3",
