@@ -29,7 +29,7 @@ export async function getChapter({ userId, courseId, chapterId }: GetChapterArgs
       muxData = await db.muxData.findUnique({ where: { chapterId } })
 
       nextChapter = await db.chapter.findFirst({
-        where: { courseId, isPublished: true, positiuon: { gte: chapter.positiuon } },
+        where: { courseId, isPublished: true, positiuon: { gt: chapter.positiuon } },
         orderBy: { positiuon: 'asc' },
       })
     }
