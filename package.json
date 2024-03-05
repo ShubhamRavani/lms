@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "pnpm prisma migrate deploy",
+    "postinstall": "pnpm prisma migrate deploy && pnpm prisma generate",
     "format": "prettier --no-error-on-unmatched-pattern --write \"src/**/*.{ts,tsx}\" *.{ts,tsx}"
   },
   "dependencies": {
