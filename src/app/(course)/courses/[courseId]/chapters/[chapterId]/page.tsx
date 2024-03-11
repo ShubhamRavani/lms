@@ -68,7 +68,7 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
           {attachments.length ? (
             <>
               <Separator />
-              <div>
+              <div className="p-4">
                 {attachments.map((attachment) => (
                   <a
                     className="flex w-full items-center rounded-md border bg-sky-200 p-3 text-sky-700 hover:underline"

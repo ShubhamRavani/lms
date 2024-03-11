@@ -68,10 +68,10 @@ export default async function ChapterDetails({ params }: { params: { courseId: s
               <IconBadge icon={LayoutDashboardIcon} />
               <h2 className="text-xl">Customize your chapter</h2>
             </div>
-          </div>
-          <div className="space-y-6">
+
             <ChapterTitleForm initialData={chapter} {...params} />
             <ChapterDescriptionForm initialData={chapter} {...params} />
+
             <div className="flex items-center gap-x-2">
               <IconBadge icon={EyeIcon} />
               <h2 className="text-xl">Access Settings</h2>
