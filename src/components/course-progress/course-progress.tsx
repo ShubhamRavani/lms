@@ -20,7 +20,7 @@ const SIZE_BY_VARIANT = {
 export default function CourseProgress({ value, variant, size }: CourseProgressProps) {
   return (
     <div>
-      <Progress value={value} />
+      <Progress className="h-2" value={value} variant={variant} />
 
       <p
         className={cn(
